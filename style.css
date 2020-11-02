@@ -1,11 +1,29 @@
+* {
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  font-weight: 100;
+}
+
 .use-keyboard-input {
+  font-weight: 300;
   display: block;
+  resize: none;
   width: 90%;
   margin: 30px auto;
   padding: 10px;
   font-size: 20px;
   height: calc(100vh - 380px);
   min-height: 300px;
+  border-radius: 10px;
+  border: 1px solid #575757;
+  border-radius: 5px;
+  transition: border-radius 0.5s;
+}
+
+.use-keyboard-input:focus{
+  outline: 0;
+  border: 0;
+  border: 1px solid #3367f5;
+  border-radius: 10px;
 }
 
 .keyboard {
@@ -13,8 +31,7 @@
   left: 0;
   bottom: 0;
   width: 100%;
-  padding: 5px 0;
-  background: #004134;
+  background: #575757;
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
   user-select: none;
   transition: bottom 0.4s;
@@ -25,6 +42,8 @@
 }
 
 .keyboard__keys {
+  max-width: 60%;
+  margin: 0 auto;
   text-align: center;
 }
 
@@ -32,13 +51,13 @@
   height: 45px;
   width: 6%;
   max-width: 90px;
-  margin: 3px;
-  border-radius: 4px;
   border: none;
   background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
   font-size: 1.05rem;
   outline: none;
+  outline: 1px solid #575757;
+  margin: 0.5px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -79,4 +98,10 @@
 
 .keyboard__key--dark {
   background: rgba(0, 0, 0, 0.25);
+}
+
+@media(max-width: 1000px){
+  .keyboard__keys{
+    max-width: 100%;
+  }
 }
