@@ -19,11 +19,15 @@
   transition: border-radius 0.5s;
 }
 
-.use-keyboard-input:focus{
+.use-keyboard-input:focus {
   outline: 0;
   border: 0;
   border: 1px solid #3367f5;
   border-radius: 10px;
+}
+.active {
+  opacity: 0.5;
+  transition: 0.1s ease;
 }
 
 .keyboard {
@@ -48,9 +52,9 @@
 }
 
 .keyboard__key {
-  height: 45px;
-  width: 6%;
-  max-width: 90px;
+  height: 60px;
+  width: 4vw;
+  max-width: 100px;
   border: none;
   background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
@@ -82,7 +86,7 @@
 }
 
 .keyboard__key--activatable::after {
-  content: '';
+  content: "";
   top: 10px;
   right: 10px;
   position: absolute;
@@ -100,8 +104,8 @@
   background: rgba(0, 0, 0, 0.25);
 }
 
-@media(max-width: 1000px){
-  .keyboard__keys{
+@media (max-width: 1000px) {
+  .keyboard__keys {
     max-width: 100%;
   }
 }

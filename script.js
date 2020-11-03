@@ -13,13 +13,13 @@ const Keyboard = {
 
   keyLayout: {
     ru: [
-      "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "backspace",
-      "ё", "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ", "ф", 
+      "ё", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "backspace",
+      "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ", "ф", 
       "ы", "caps", "в", "а", "п", "р", "о", "л", "д", "ж", "э", "enter",
       "done", "я", "ч", "с", "м", "и", "т", "ь", "б", "ю", ",", ".", "?",
       "space", "lang"
     ],
-    eng: [
+    en: [
       "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "backspace",
       "q", "w", "e", "r", "t", "y", "u", "i", "o", "p",
       "caps", "a", "s", "d", "f", "g", "h", "j", "k", "l", "enter",
@@ -61,7 +61,7 @@ const Keyboard = {
 
   _createKeys() {
     const fragment = document.createDocumentFragment();
-    const keyLayout = this.properties.lang === "eng" ? this.keyLayout.eng : this.keyLayout.ru;
+    const keyLayout = this.properties.lang === "en" ? this.keyLayout.en : this.keyLayout.ru;
 
     // Creates HTML for an icon
     const createIconHTML = (icon_name) => {
@@ -81,6 +81,23 @@ const Keyboard = {
           e.preventDefault();
         });
       }
+
+      document.addEventListener("keydown", (e) => {
+        if(e.getModifierState('CapsLock') !== this.properties.capsLock){
+          this._toggleCapsLock();
+          document.querySelector('.keyboard__key--activatable').classList.toggle("keyboard__key--active");
+        }
+        if(e.key.toLowerCase() === key.toLowerCase()){
+          keyElement.classList.add('active');
+        }
+      })
+
+      document.addEventListener("keyup", (e) => {
+        
+        if(e.key.toLowerCase() === key.toLowerCase()){
+          keyElement.classList.remove('active');
+        }
+      })
 
       switch (key) {
         case "backspace":
@@ -142,7 +159,7 @@ const Keyboard = {
           keyElement.addEventListener("click", () => {
             this._toggleLang();
           });
-          keyElement.innerText = this.properties.lang === "eng" ? "ru" : "eng";
+          keyElement.innerText = this.properties.lang === "en" ? "ru" : "en";
 
           break;
         
@@ -183,7 +200,7 @@ const Keyboard = {
   },
 
   _toggleLang() {
-    this.properties.lang  = this.properties.lang === 'ru' ? 'eng' : 'ru';
+    this.properties.lang  = this.properties.lang === 'ru' ? 'en' : 'ru';
     document.body.removeChild(document.querySelector('.keyboard'))
     this.close();
     this.init();
