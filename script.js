@@ -63,6 +63,7 @@ const Keyboard = {
   _createKeys() {
     const fragment = document.createDocumentFragment();
     const keyLayout = this.properties.lang === "en" ? this.keyLayout.en : this.keyLayout.ru;
+    const field = document.querySelector(".use-keyboard-input");
 
     // Creates HTML for an icon
     const createIconHTML = (icon_name) => {
@@ -106,8 +107,14 @@ const Keyboard = {
           keyElement.innerHTML = createIconHTML("backspace");
 
           keyElement.addEventListener("click", () => {
-            this.properties.value = this.properties.value.substring(0, this.properties.value.length - 1);
-            this._triggerEvent("oninput");
+            let str = field.value;
+            let caret = getCaret(field);
+            if(caret > 0){
+              str = str.slice(0, caret - 1) + str.slice(caret, str.length);
+              field.value = str;
+              caret = caret - 1;
+            }
+            field.setSelectionRange(caret, caret);
           });
 
           break;
