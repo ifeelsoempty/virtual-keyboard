@@ -1,4 +1,5 @@
-alert('Привет, будьте добры проверить ближе к выходным пожалуйста!Времени не было поэтому приходится делать таск на этой неделе')
+// alert('Привет, будьте добры проверить ближе к выходным пожалуйста!Времени не было поэтому приходится делать таск на этой неделе')
+
 const Keyboard = {
   elements: {
     main: null,
@@ -14,17 +15,17 @@ const Keyboard = {
   keyLayout: {
     ru: [
       "ё", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "backspace",
-      "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ", "ф", 
-      "ы", "caps", "в", "а", "п", "р", "о", "л", "д", "ж", "э", "enter",
+      "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ", "ArrowLeft", "ArrowRight",
+      "caps", "ф", "ы", "в", "а", "п", "р", "о", "л", "д", "ж", "э", "enter",
       "done", "я", "ч", "с", "м", "и", "т", "ь", "б", "ю", ",", ".", "?",
-      "space", "lang"
+      "space", "lang",
     ],
     en: [
-      "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "backspace",
+      "`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "backspace",
       "q", "w", "e", "r", "t", "y", "u", "i", "o", "p",
       "caps", "a", "s", "d", "f", "g", "h", "j", "k", "l", "enter",
-      "done", "z", "x", "c", "v", "b", "n", "m", ",", ".", "?",
-      "space", "lang"
+      "done", "z", "x", "c", "v", "b", "n", "m", ",", ".", "?", "ArrowLeft", "ArrowRight",
+      "space", "lang",
     ]
   },
 
@@ -162,6 +163,24 @@ const Keyboard = {
           keyElement.innerText = this.properties.lang === "en" ? "ru" : "en";
 
           break;
+
+        case "ArrowLeft":
+          keyElement.innerHTML = "<";
+          keyElement.addEventListener("click", () => {
+            const field = document.querySelector(".use-keyboard-input");
+            const caret = getCaret(field) - 1;
+            field.setSelectionRange(caret, caret);
+          });
+          break;
+
+        case "ArrowRight":
+          keyElement.innerHTML = ">";
+          keyElement.addEventListener("click", () => {
+            const field = document.querySelector(".use-keyboard-input");
+            const caret = getCaret(field) + 1;
+            field.setSelectionRange(caret, caret);
+          });
+          break;
         
         default:
           keyElement.textContent = key.toLowerCase();
@@ -226,3 +245,17 @@ const Keyboard = {
 window.addEventListener("DOMContentLoaded", function () {
   Keyboard.init();
 });
+
+function getCaret(field) {
+  var iCaretPos = 0;
+  if (document.selection) {
+    var oSel = document.selection.createRange();
+
+    oSel.moveStart('character', -field.value.length);
+    iCaretPos = oSel.text.length;
+  }
+  else if (field.selectionStart || field.selectionStart == '0')
+    iCaretPos = field.selectionDirection=='backward' ? field.selectionStart : field.selectionEnd;
+
+  return iCaretPos;
+}
