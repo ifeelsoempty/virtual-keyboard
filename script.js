@@ -193,7 +193,7 @@ const Keyboard = {
           keyElement.textContent = key.toLowerCase();
           keyElement.addEventListener("click", () => {
             this.properties.value += this.properties.capsLock ? key.toUpperCase() : key.toLowerCase();
-            this._triggerEvent("oninput");
+            field.value = field.value + keyElement.textContent;
           });
 
           break;
@@ -207,12 +207,6 @@ const Keyboard = {
     });
 
     return fragment;
-  },
-
-  _triggerEvent(handlerName) {
-    if (typeof this.eventHandlers[handlerName] == "function") {
-      this.eventHandlers[handlerName](this.properties.value);
-    }
   },
 
   _toggleCapsLock() {
