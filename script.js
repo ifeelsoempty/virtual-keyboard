@@ -14,18 +14,27 @@ const Keyboard = {
 
   keyLayout: {
     ru: [
-      "ё", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "backspace",
+      "backspace",
       "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ", "ArrowLeft", "ArrowRight",
       "caps", "ф", "ы", "в", "а", "п", "р", "о", "л", "д", "ж", "э", "enter",
-      "done", "я", "ч", "с", "м", "и", "т", "ь", "б", "ю", ",", ".", "?",
-      "space", "lang",
+      "shift", "я", "ч", "с", "м", "и", "т", "ь", "б", "ю", "lang",
+      "done", "space",
     ],
     en: [
-      "`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "backspace",
-      "q", "w", "e", "r", "t", "y", "u", "i", "o", "p",
+      "backspace",
+      "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "ArrowLeft", "ArrowRight",
       "caps", "a", "s", "d", "f", "g", "h", "j", "k", "l", "enter",
-      "done", "z", "x", "c", "v", "b", "n", "m", ",", ".", "?", "ArrowLeft", "ArrowRight",
-      "space", "lang",
+      "shift", "z", "x", "c", "v", "b", "n", "m", "lang",
+      "done", "space",
+    ],
+    shiftEn: [
+      "~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+",
+    ],
+    shiftRu: [
+      "Ё", '!', '"', "№", ";", "%", ":", "?", "*", "(", ")", "_", "+",
+    ],
+    noShift: [
+      "`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=",
     ]
   },
 
@@ -33,6 +42,7 @@ const Keyboard = {
     value: "",
     capsLock: false,
     lang: 'ru',
+    shift: false,
   },
 
   init() {
@@ -61,9 +71,21 @@ const Keyboard = {
   },
 
   _createKeys() {
-    const fragment = document.createDocumentFragment();
-    const keyLayout = this.properties.lang === "en" ? this.keyLayout.en : this.keyLayout.ru;
-    const field = document.querySelector(".use-keyboard-input");
+    const field = document.querySelector(".use-keyboard-input"),
+          fragment = document.createDocumentFragment();
+
+    let keyLayout, 
+        langLayout = this.properties.lang === "en" ? this.keyLayout.en : this.keyLayout.ru;
+
+    if(this.properties.shift == true){
+      if(this.properties.lang === 'ru'){
+        keyLayout = this.keyLayout.shiftRu.concat(langLayout);
+      }else{
+        keyLayout = this.keyLayout.shiftEn.concat(langLayout);
+      }
+    }else{
+      keyLayout = this.keyLayout.noShift.concat(langLayout);
+    }
 
     // Creates HTML for an icon
     const createIconHTML = (icon_name) => {
@@ -72,7 +94,7 @@ const Keyboard = {
 
     keyLayout.forEach(key => {
       const keyElement = document.createElement("button");
-      const insertLineBreak = ["backspace", "p", "enter", "?", "lang"].indexOf(key) !== -1;
+      const insertLineBreak = ["backspace", "ArrowRight", "enter", "lang"].indexOf(key) !== -1;
 
       // Add attributes/classes
       keyElement.setAttribute("type", "button");
@@ -89,13 +111,20 @@ const Keyboard = {
           this._toggleCapsLock();
           document.querySelector('.keyboard__key--activatable').classList.toggle("keyboard__key--active");
         }
+        if(e.getModifierState('Shift') !== this.properties.shift){
+          this._toggleShift();
+          keyElement.classList.toggle("keyboard__key--active", this.properties.shift);
+        }
         if(e.key.toLowerCase() === key.toLowerCase()){
           keyElement.classList.add('active');
         }
       })
 
       document.addEventListener("keyup", (e) => {
-        
+        if(e.getModifierState('Shift') !== this.properties.shift){
+          this._toggleShift();
+          keyElement.classList.toggle("keyboard__key--active", this.properties.shift);
+        }
         if(e.key.toLowerCase() === key.toLowerCase()){
           keyElement.classList.remove('active');
         }
@@ -128,6 +157,20 @@ const Keyboard = {
             keyElement.classList.toggle("keyboard__key--active", this.properties.capsLock);
           });
 
+          break;
+
+        case "shift":
+          keyElement.innerHTML = createIconHTML("keyboard");
+          keyElement.classList.add("keyboard__key--wide", "keyboard__key--activatable");
+          if(this.properties.shift){
+            keyElement.classList.toggle("keyboard__key--active", this.properties.shift);
+            keyElement.classList.add('active');
+          }
+
+          keyElement.addEventListener("mousedown", () => {
+            this._toggleShift();
+            keyElement.classList.toggle("keyboard__key--active", this.properties.shift);
+          });
           break;
 
         case "enter":
@@ -188,7 +231,7 @@ const Keyboard = {
             field.setSelectionRange(caret, caret);
           });
           break;
-        
+
         default:
           keyElement.textContent = key.toLowerCase();
           keyElement.addEventListener("click", () => {
@@ -215,6 +258,20 @@ const Keyboard = {
     for (const key of this.elements.keys) {
       if (key.childElementCount === 0) {
         key.textContent = this.properties.capsLock ? key.textContent.toUpperCase() : key.textContent.toLowerCase();
+      }
+    }
+  },
+
+  _toggleShift() {
+    this.properties.shift = !this.properties.shift;
+    document.body.removeChild(document.querySelector('.keyboard'))
+    this.close();
+    this.init();
+    this.open();
+
+    for (const key of this.elements.keys) {
+      if (key.childElementCount === 0) {
+        key.textContent = this.properties.shift ? key.textContent.toUpperCase() : key.textContent.toLowerCase();
       }
     }
   },

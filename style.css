@@ -103,9 +103,3 @@
 .keyboard__key--dark {
   background: rgba(0, 0, 0, 0.25);
 }
-
-@media screen and (min-width: 810px) {
-  .keyboard__keys {
-    max-width: 60%;
-  }
-}
