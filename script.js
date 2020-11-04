@@ -177,21 +177,11 @@ const Keyboard = {
           keyElement.classList.add("keyboard__key--wide");
           keyElement.innerHTML = createIconHTML("keyboard_return");
 
-          keyElement.addEventListener("click", () => {
-            this.properties.value += "\n";
-            this._triggerEvent("oninput");
-          });
-
           break;
 
         case "space":
           keyElement.classList.add("keyboard__key--extra-wide");
           keyElement.innerHTML = createIconHTML("space_bar");
-
-          keyElement.addEventListener("click", () => {
-            this.properties.value += " ";
-            this._triggerEvent("oninput");
-          });
 
           break;
 
@@ -201,9 +191,7 @@ const Keyboard = {
 
           keyElement.addEventListener("click", () => {
             this.close();
-            this._triggerEvent("onclose");
           });
-
           break;
 
         case "lang":
@@ -235,8 +223,10 @@ const Keyboard = {
         default:
           keyElement.textContent = key.toLowerCase();
           keyElement.addEventListener("click", () => {
+            const caret = getCaret(field);
             this.properties.value += this.properties.capsLock ? key.toUpperCase() : key.toLowerCase();
-            field.value = field.value + keyElement.textContent;
+            field.value = field.value.slice(0, caret) + keyElement.textContent + field.value.slice(caret, field.value.length);
+            field.setSelectionRange(caret + 1, caret + 1);
           });
 
           break;
